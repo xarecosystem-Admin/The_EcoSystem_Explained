@@ -211,6 +211,3 @@ For implementation support, training, and commercial licensing:
 """
 
 
-print("✅ README.md created successfully!")
-print(f"📄 File size: {len(readme_content):,} characters")
-print(f"📊 Word count: approximately {len(readme_content.split()):,} words")
