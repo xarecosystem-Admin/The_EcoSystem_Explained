@@ -1,0 +1,455 @@
+/* xAr Manifesto — Apple-inspired Minimalist Design */
+:root {
+  --bg-0: #000000;
+  --bg-1: #1a1a1a;
+  --text: #f5f5f7;
+  --muted: #86868b;
+  --accent: #0071e3;
+  --subtle-bg: rgba(255, 255, 255, 0.03);
+  --border-color: rgba(255, 255, 255, 0.1);
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.02'/%3E%3C/svg%3E");
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+html { background: var(--bg-0); color: var(--text); }
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  letter-spacing: -0.01em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: var(--bg-0);
+  background-image: var(--grain);
+  font-weight: 400;
+}
+
+/* Ambient background layers */
+.bg { position: fixed; inset: 0; z-index: -2; pointer-events: none; overflow: hidden; }
+.bg__glow {
+  position: absolute; inset: -10%;
+  background: radial-gradient(ellipse at center, rgba(0,113,227,0.03) 0%, transparent 70%);
+  filter: blur(80px);
+  opacity: 0.6;
+}
+
+.nav {
+  position: fixed; top: 2rem; left: 50%; transform: translateX(-50%); z-index: 100;
+  font-weight: 500; font-size: 0.875rem; letter-spacing: 0.01em;
+  opacity: 0.7; transition: opacity 0.3s ease;
+}
+.nav:hover { opacity: 1; }
+.nav__brand {
+  text-decoration: none; color: var(--text);
+  padding: 0.75rem 1.75rem; border-radius: 980px;
+  background: var(--subtle-bg); backdrop-filter: blur(20px);
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+.nav__brand:hover {
+  background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.2);
+  transform: scale(1.02);
+}
+
+.js .panel { opacity: 1; transform: translateY(0); }
+.panel.is-visible { opacity: 1; transform: translateY(0); transition: opacity 700ms ease, transform 900ms ease; }
+
+.hero { 
+  text-align: center; 
+  overflow: hidden; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  height: 100vh; 
+  min-height: 100vh; 
+  max-height: 100vh; 
+}
+.hero__media {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  min-width: 100%;
+  min-height: 100%;
+  z-index: -1;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  filter: saturate(0.9) contrast(1.05) brightness(0.8) opacity(0.75);
+  will-change: transform, opacity;
+  opacity: 0;
+  /* Staged loading: background appears after 0.1s */
+  animation: stagedBackgroundLoad 1s ease-out 0.1s forwards, heartbeatFade 40s ease-in-out 2s infinite;
+  /* Ensure full coverage on all devices */
+  transform-origin: center center;
+  object-fit: cover;
+}
+
+.hero__media::before {
+  /* Gentle organic flow effect */
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  min-width: 100%;
+  min-height: 100%;
+  background: 
+    radial-gradient(ellipse at 30% 40%, rgba(0,113,227,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse at 70% 60%, rgba(0,113,227,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse at 50% 50%, rgba(0,113,227,0.04) 0%, transparent 80%);
+  animation: organicFlow 40s ease-in-out infinite;
+  pointer-events: none;
+  mix-blend-mode: soft-light;
+}
+
+.hero__media::after {
+  /* Subtle vignette for depth */
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  min-width: 100%;
+  min-height: 100%;
+  background: 
+    radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.4) 100%),
+    linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.3) 100%);
+  pointer-events: none;
+  opacity: 0;
+  animation: fadeInVignette 4s ease-out 1s forwards;
+}
+.hero__inner { 
+  max-width: 1200px; 
+  padding-inline: 1rem; 
+  position: relative; 
+  z-index: 1; 
+  width: 100%; 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  justify-content: center; 
+}
+.hero__title {
+  font-weight: 700;
+  font-size: clamp(3.2rem, 7vw + 1rem, 8rem);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+  will-change: transform, opacity, filter, letter-spacing;
+  text-shadow: none;
+  color: var(--text);
+  margin-bottom: 1.5rem;
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hero__title--ar { 
+  font-family: 'IBM Plex Sans Arabic', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+  font-weight: 700; 
+  letter-spacing: 0;
+  text-align: center;
+}
+
+.hero__title[dir="rtl"] {
+  text-align: center;
+  letter-spacing: 0;
+}
+.hero__sub {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  color: var(--muted);
+  font-size: clamp(0.875rem, 1.1vw + 0.4rem, 1rem);
+  margin: 0.4rem auto;
+  letter-spacing: 0.08em;
+  text-transform: none;
+  text-shadow: none;
+  font-weight: 400;
+  opacity: 0.8;
+}
+.hero__sub--ar {
+  font-family: 'IBM Plex Sans Arabic', 'Inter Tight', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-weight: 700;
+  letter-spacing: 0; /* Arabic should not be tracked like Latin uppercase */
+  text-transform: none;
+}
+.hero__sub--alt {
+  /* Neutralize Latin uppercase tracking for non-Latin scripts and improve font coverage */
+  letter-spacing: 0;
+  text-transform: none;
+  margin-top: 0.25rem;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, 'Noto Sans', 'Noto Sans CJK SC', 'Noto Sans Hebrew', Arial, sans-serif;
+}
+
+.cut {
+  font-weight: 800;
+  font-size: clamp(1.8rem, 3.6vw + 1rem, 3.6rem);
+  line-height: 1.02;
+  text-align: center;
+  margin: 0 0 1rem 0;
+}
+.copy {
+  font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: var(--muted);
+  font-size: clamp(0.95rem, 0.7vw + 0.8rem, 1.1rem);
+  max-width: 900px;
+  text-align: center;
+  margin: 0 auto;
+}
+
+/* Touch targets & responsiveness */
+button, .nav__item, .matrix__cell { touch-action: manipulation; }
+button, .matrix__cell { min-height: 48px; }
+@media (max-width: 600px) {
+  .panel { padding: 6rem 1rem 4rem; }
+  .matrix { gap: 8px; }
+  .matrix__cell { padding: 0.9rem; min-height: 76px; }
+}
+
+/* Matrix */
+.panel--matrix { padding-top: 4rem; }
+.matrix__head { text-align: center; margin-bottom: 2rem; }
+.matrix {
+  --cols: 5;
+  display: grid;
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+  gap: 10px;
+  width: min(1200px, 92vw);
+  margin: 0 auto;
+}
+.matrix__cell {
+  position: relative;
+  border: 1px solid #1b1c1f;
+  background: linear-gradient(180deg, #0e0f12, #0a0a0c);
+  padding: 1.1rem;
+  min-height: 92px;
+  cursor: pointer;
+  outline: none;
+}
+.matrix__cell[aria-disabled="true"] { opacity: 0.25; pointer-events: none; }
+.matrix__cell:focus-visible { box-shadow: 0 0 0 2px #0f1316, 0 0 0 3px var(--accent); }
+.matrix__title { font-weight: 600; font-size: 0.95rem; }
+.matrix__cipher { font-family: 'IBM Plex Mono', ui-monospace, monospace; color: #6c6f75; font-size: 0.85rem; letter-spacing: 0.08em; }
+.matrix__reveal { color: var(--accent); font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 0.85rem; }
+
+.matrix__detail {
+  width: min(900px, 92vw);
+  margin: 1.5rem auto 0;
+  border-left: 2px solid var(--accent);
+  padding: 1rem 1.25rem;
+  background: linear-gradient(180deg, #0b0c0e, #0a0b0d);
+  display: none;
+}
+.matrix__detail.is-open { display: block; }
+.matrix__detail h3 { margin: 0 0 0.25rem; font-size: 1.1rem; }
+.matrix__detail p { margin: 0.25rem 0; color: var(--muted); }
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .panel { transition: none !important; }
+  .js .panel { opacity: 1 !important; transform: none !important; }
+}
+
+/* Responsive adjustments */
+
+/* Large desktops and laptops (1366px and up) */
+@media (min-width: 1366px) {
+  .hero {
+    height: 100vh;
+    min-height: 100vh;
+    max-height: 100vh;
+    padding: 1.5rem 0;
+  }
+  .hero__title {
+    font-size: clamp(3.6rem, 4.5vw + 1rem, 8.5rem);
+    letter-spacing: -0.025em;
+  }
+  .hero__sub {
+    font-size: clamp(0.9375rem, 1.05vw + 0.4rem, 1.125rem);
+    margin-top: 0.6rem;
+    letter-spacing: 0.07em;
+  }
+}
+
+/* Standard laptops and tablets (1024px - 1365px) */
+@media (max-width: 1365px) {
+  .hero {
+    height: 100vh;
+    min-height: 100vh;
+    max-height: 100vh;
+    padding: 1.25rem 0;
+  }
+  .hero__title {
+    font-size: clamp(3.2rem, 4.8vw + 1rem, 7rem);
+    letter-spacing: -0.022em;
+  }
+  .hero__sub {
+    font-size: clamp(0.875rem, 1vw + 0.35rem, 1.0625rem);
+    margin-top: 0.5rem;
+    letter-spacing: 0.075em;
+  }
+}
+
+/* Small laptops and large tablets (768px - 1023px) */
+@media (max-width: 1023px) {
+  .hero {
+    height: 100vh;
+    min-height: 100vh;
+    max-height: 100vh;
+    padding: 1rem 0;
+  }
+  .hero__inner {
+    max-width: 90vw;
+    padding-inline: 1.5rem;
+  }
+  .hero__title {
+    font-size: clamp(2.8rem, 4.2vw + 1rem, 5.5rem);
+    line-height: 1.12;
+    letter-spacing: -0.018em;
+  }
+  .hero__sub {
+    font-size: clamp(0.8125rem, 0.95vw + 0.3rem, 0.9375rem);
+    margin-top: 0.4rem;
+    letter-spacing: 0.08em;
+  }
+}
+
+/* Mobile devices (480px - 767px) */
+@media (max-width: 767px) {
+  .hero {
+    height: 100vh;
+    min-height: 100vh;
+    max-height: 100vh;
+    padding: 0.75rem 0;
+  }
+  .hero__inner {
+    max-width: 95vw;
+    padding-inline: 1rem;
+  }
+  .hero__title {
+    font-size: clamp(2.4rem, 3.8vw + 1rem, 4.5rem);
+    line-height: 1.18;
+    letter-spacing: -0.015em;
+  }
+  .hero__sub {
+    font-size: clamp(0.75rem, 0.85vw + 0.25rem, 0.875rem);
+    margin-top: 0.35rem;
+    letter-spacing: 0.085em;
+  }
+  .hero__sub--alt {
+    margin-top: 0.2rem;
+  }
+}
+
+/* Small mobile devices (479px and below) */
+@media (max-width: 479px) {
+  .hero {
+    height: 100vh;
+    min-height: 100vh;
+    max-height: 100vh;
+    padding: 0.5rem 0;
+  }
+  .hero__inner {
+    max-width: 98vw;
+    padding-inline: 0.75rem;
+  }
+  .hero__title {
+    font-size: clamp(2rem, 3.2vw + 1rem, 3.5rem);
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+  }
+  .hero__sub {
+    font-size: clamp(0.6875rem, 0.75vw + 0.2rem, 0.75rem);
+    margin-top: 0.3rem;
+    letter-spacing: 0.09em;
+  }
+  .hero__sub--alt {
+    margin-top: 0.15rem;
+  }
+}
+
+/* Legacy animations removed to prevent conflicts */
+
+/* Cinematic title styling */
+.hero__title {
+  opacity: 0;
+  position: relative;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Enhanced glow effect */
+  text-shadow: 0 0 40px rgba(255, 255, 255, 0.2),
+               0 0 80px rgba(255, 255, 255, 0.1),
+               0 0 120px rgba(0, 113, 227, 0.08),
+               0 0 160px rgba(0, 113, 227, 0.05);
+}
+
+.hero__title.cinematic {
+  opacity: 1;
+}
+
+.hero__title.staged-title-load {
+  animation: stagedTitleLoad 2s ease-out forwards;
+}
+
+/* Clean transition effects */
+
+/* Staged loading animations */
+@keyframes stagedBackgroundLoad {
+  0% {
+    opacity: 0;
+    transform: scale(1.2);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes stagedTitleLoad {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Beating background effect */
+@keyframes heartbeatFade {
+  0%, 100% {
+    opacity: 0.75;
+    transform: scale(1.1);
+  }
+  50% {
+    opacity: 0.65;
+    transform: scale(1.15);
+  }
+}
+
+/* Typing effect */
+.hero__title.typing {
+  border-right: 2px solid rgba(255, 255, 255, 0.3);
+  animation: typingCursor 1s infinite;
+}
+
+@keyframes typingCursor {
+  0%, 50% {
+    border-right-color: rgba(255, 255, 255, 0.3);
+  }
+  51%, 100% {
+    border-right-color: transparent;
+  }
+}
+
+/* Enhanced glow during typing */
+.hero__title.typing {
+  text-shadow: 0 0 60px rgba(255, 255, 255, 0.3),
+               0 0 120px rgba(255, 255, 255, 0.2),
+               0 0 180px rgba(0, 113, 227, 0.15),
+               0 0 240px rgba(0, 113, 227, 0.08);
+}
